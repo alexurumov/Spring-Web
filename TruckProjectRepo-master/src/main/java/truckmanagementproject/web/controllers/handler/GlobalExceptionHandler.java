@@ -1,0 +1,27 @@
+package truckmanagementproject.web.controllers.handler;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.ModelAndView;
+
+@ControllerAdvice
+public class GlobalExceptionHandler {
+
+    @ExceptionHandler({Throwable.class})
+    public ModelAndView handleSqlException(Throwable e){
+        ModelAndView modelAndView = new ModelAndView("error");
+
+        Throwable throwable = e;
+
+        while (throwable.getCause() != null){
+            throwable = throwable.getCause();
+        }
+
+        modelAndView.setStatus(HttpStatus.NOT_FOUND);
+
+        modelAndView.addObject("message", throwable.getMessage());
+
+        return modelAndView;
+    }
+}
